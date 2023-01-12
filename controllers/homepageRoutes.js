@@ -16,13 +16,13 @@ router.get('/', async (req, res) => {
 
     // Serialize data so the template can read it
     const blogs = blogData.map((blog) => blog.get({ plain: true }));
-    
+
     console.log(blogs);
 
     // Pass serialized data and session flag into template
-    res.render('homepage', { 
-      blogs, 
-      logged_in: req.session.logged_in 
+    res.render('homepage', {
+      blogs,
+      logged_in: req.session.logged_in
     });
   } catch (err) {
     res.status(500).json(err);
@@ -59,7 +59,10 @@ router.get('/profile', withAuth, async (req, res) => {
   try {
     // // Find the logged in user based on the session ID
     const userData = await User.findByPk(req.session.user_id, {
-      attributes: { exclude: ['password'] }
+      attributes: {
+        exclude: ['password'],
+        // include: [Blog]
+      }
       // include: [{ model: Blog }],
     });
 
@@ -71,6 +74,7 @@ router.get('/profile', withAuth, async (req, res) => {
       logged_in: req.session.logged_in
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
